@@ -30,14 +30,17 @@
 #include <errno.h>
 #include <unistd.h>
 #include <assert.h>
+#if IPERF_LWIP
+#else
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <sys/select.h>
+#endif
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif
 #include <sys/time.h>
-#include <sys/select.h>
 
 #include "iperf.h"
 #include "iperf_api.h"

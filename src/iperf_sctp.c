@@ -31,13 +31,18 @@
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
+#if IPERF_LWIP
+#include <lwip/sockets.h>
+#include <lwip/netdb.h>
+#else
 #include <sys/socket.h>
-#include <sys/types.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <netinet/tcp.h>
-#include <sys/time.h>
 #include <sys/select.h>
+#endif
+#include <sys/types.h>
+#include <sys/time.h>
 
 #ifdef HAVE_NETINET_SCTP_H
 #include <netinet/sctp.h>

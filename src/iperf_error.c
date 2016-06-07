@@ -26,7 +26,11 @@
  */
 #include <stdio.h>
 #include <errno.h>
+#if IPERF_LWIP
+#include <lwip/netdb.h>
+#else
 #include <netdb.h>
+#endif
 #include <string.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -363,11 +367,12 @@ iperf_strerror(int i_errno)
 
     if (herr || perr)
         strncat(errstr, ": ", len - strlen(errstr) - 1);
+#if ! IPERF_LWIP
     if (h_errno && herr) {
         strncat(errstr, hstrerror(h_errno), len - strlen(errstr) - 1);
     } else if (errno && perr) {
         strncat(errstr, strerror(errno), len - strlen(errstr) - 1);
     }
-
+#endif
     return errstr;
 }

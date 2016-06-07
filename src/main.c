@@ -36,15 +36,20 @@
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif
+#if IPERF_LWIP
+#include <lwip/sockets.h>
+#include <lwip/netdb.h>
+#else
 #include <sys/socket.h>
-#include <sys/types.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <netinet/tcp.h>
+#endif
+#include <sys/types.h>
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif
-#include <netinet/tcp.h>
 
 #include "iperf.h"
 #include "iperf_api.h"
@@ -55,10 +60,9 @@
 
 static int run(struct iperf_test *test);
 
-
 /**************************************************************************/
 int
-main(int argc, char **argv)
+iperf_main(int argc, char **argv)
 {
     struct iperf_test *test;
 
@@ -179,3 +183,9 @@ run(struct iperf_test *test)
 
     return 0;
 }
+#ifdef _EXE_
+int main(int argc, char** argv)
+{
+	return iperf_main(argc, argv);
+}
+#endif

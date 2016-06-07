@@ -34,9 +34,16 @@
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif
+#if IPERF_LWIP
+#include <lwip/sockets.h>
+#include <lwip/netif.h>
+#include <lwip/netif/etharp.h>
+#include <lwip/netdb.h>
+#else
 #include <sys/select.h>
 #include <sys/socket.h>
 #include <netinet/tcp.h>
+#endif
 
 #if defined(HAVE_CPUSET_SETAFFINITY)
 #include <sys/param.h>

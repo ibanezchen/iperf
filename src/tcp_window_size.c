@@ -58,7 +58,11 @@
  */
 
 #include <stdio.h>
+#if IPERF_LWIP
+#include <lwip/sockets.h>
+#else
 #include <sys/socket.h>
+#endif
 #include <assert.h>
 
 /* -------------------------------------------------------------------

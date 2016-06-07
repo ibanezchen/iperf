@@ -36,11 +36,13 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdarg.h>
+#if ! IPERF_LWIP
 #include <sys/select.h>
+#include <sys/utsname.h>
+#endif
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/resource.h>
-#include <sys/utsname.h>
 #include <time.h>
 #include <errno.h>
 
@@ -174,7 +176,7 @@ delay(int us)
 }
 #endif
 
-
+extern unsigned PLT_HZ;
 void
 cpu_util(double pcpu[3])
 {
@@ -191,13 +193,13 @@ cpu_util(double pcpu[3])
     if (pcpu == NULL) {
         gettimeofday(&last, NULL);
         clast = clock();
-	getrusage(RUSAGE_SELF, &rlast);
+	//getrusage(RUSAGE_SELF, &rlast);
         return;
     }
 
     gettimeofday(&temp, NULL);
     ctemp = clock();
-    getrusage(RUSAGE_SELF, &rtemp);
+    //getrusage(RUSAGE_SELF, &rtemp);
 
     timediff = ((temp.tv_sec * 1000000.0 + temp.tv_usec) -
                 (last.tv_sec * 1000000.0 + last.tv_usec));
@@ -214,6 +216,9 @@ cpu_util(double pcpu[3])
 const char *
 get_system_info(void)
 {
+#if IPERF_LWIP
+    return "lwip";
+#else
     static char buf[1024];
     struct utsname  uts;
 
@@ -224,6 +229,7 @@ get_system_info(void)
 	     uts.release, uts.version, uts.machine);
 
     return buf;
+#endif
 }
 
 

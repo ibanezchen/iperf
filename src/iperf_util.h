@@ -28,7 +28,10 @@
 #define __IPERF_UTIL_H
 
 #include "cjson.h"
+#if IPERF_LWIP
+#else
 #include <sys/select.h>
+#endif
 
 void make_cookie(char *);
 

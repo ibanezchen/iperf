@@ -57,10 +57,14 @@
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif
+#if IPERF_LWIP
+#include <lwip/sockets.h>
+#else
 #include <sys/socket.h>
+#include <netinet/tcp.h>
+#endif
 #include <sys/types.h>
 #include <sys/time.h>
-#include <netinet/tcp.h>
 
 
 #include "iperf.h"

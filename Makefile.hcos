@@ -1,0 +1,56 @@
+PREFIX ?= $(shell pwd)/../prefix/$(CROSS:%-=%)
+SOC?=linkit
+NAME   :=iperf3
+TARGET :=arm-none-eabi
+CROSS  :=$(TARGET)-
+CPU    :=arm
+INCLUDE:=-Iinclude -I$(PREFIX)/include -Isrc $(SOC_INC) \
+	-I$(PREFIX_GCC)/$(TARGET)/include/machine
+COPTS  ?=-march=armv7-a -mthumb
+AARCH  :=$(shell echo $(COPTS) | sed -e 's/.*armv\([0-9]\).*/\1/g')
+MOPTS  :=$(COPTS) \
+	-DCFG_AARCH=$(AARCH) \
+	-fno-builtin -fno-common \
+	-ffunction-sections -fdata-sections -fshort-enums
+CONFIG =-Dint64_t="long long" \
+	-Duint64_t="unsigned long long" \
+	-Dint32_t="int" \
+	-Duint32_t="unsigned" \
+	-DINET6_ADDRSTRLEN=48	\
+	-DIPERF_LWIP=1 \
+	-DIPERF_VERSION=3 \
+	-DTCP_MAXSEG=2 \
+	-DCLOCKS_PER_SEC=PLT_HZ \
+	-D_PACKAGE_STRING=hyperc_lwip \
+	-Dselect=lwip_select \
+	-Dsrandom=srand \
+	-Drandom=rand
+ASFLAGS:=$(MOPTS) $(CONFIG) -O1 -g -Wall -D __ASSEMBLY__
+CFLAGS :=$(MOPTS) $(CONFIG) -O1 -g -Wall
+LSCRIPT?=rom.ld
+LDFLAGS:=$(MOPTS) -g -nostartfiles -nodefaultlibs \
+	-L$(PREFIX)/lib -L$(PREFIX)/bin/$(SOC) -T$(LSCRIPT)	\
+	-Wl,--start-group -lhcos -lc -lgcc -L . -liperf3 $(SOC_LIB) \
+	-Wl,--end-group -Wl,--gc-sections
+
+LIB    :=lib$(NAME).a
+
+ALL    :=lib iperf3.elf.bin
+CLEAN  :=
+CPU    :=arm
+
+VPATH  :=src
+VOBJ   :=$(patsubst %.S,%.o, \
+		$(patsubst %.c,%.o, \
+		$(patsubst %.cpp, %.o, \
+			$(notdir $(foreach DIR,$(VPATH),\
+				$(wildcard $(DIR)/*.S)	\
+				$(wildcard $(DIR)/*.c) 	\
+				$(wildcard $(DIR)/*.cpp))))))
+default:all
+
+include $(PREFIX)/share/Makefile.rule
+
+iperf3.elf.bin:main.elf.bin
+	mv $^ $@
+

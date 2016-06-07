@@ -64,6 +64,10 @@ static int cJSON_strcasecmp( const char *s1, const char *s2 )
 	return tolower((u_char)*s1) - tolower((u_char)*s2);
 }
 
+#if IPERF_LWIP
+void *malloc(size_t size);
+void free(void *ptr);
+#endif
 
 static void *(*cJSON_malloc)( size_t ) = malloc;
 static void (*cJSON_free)( void * ) = free;
@@ -219,9 +223,13 @@ static char *print_number( cJSON *item )
 		f = item->valuefloat;
 		i = f;
 		f2 = i;
-		if ( f2 == f && item->valueint >= LLONG_MIN && item->valueint <= LLONG_MAX )
+		if ( f2 == f && item->valueint >= LLONG_MIN && item->valueint <= LLONG_MAX ) {
+#if IPERF_LWIP
+			sprintf( str, "%d", (unsigned) item->valueint );
+#else
 			sprintf( str, "%lld", (long long) item->valueint );
-		else
+#endif
+		}else
 			sprintf( str, "%g", item->valuefloat );
 	}
 	return str;

@@ -47,10 +47,14 @@
 #include <stdlib.h>
 #include <sys/param.h>
 #include <sys/types.h>
+#if IPERF_LWIP
+#include <lwip/sockets.h>
+#else
 #include <sys/socket.h>
 #include <netinet/tcp.h>
-#include <string.h>
 #include <netinet/in.h>
+#endif
+#include <string.h>
 #include <errno.h>
 
 #include "iperf.h"

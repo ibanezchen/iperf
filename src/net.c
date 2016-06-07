@@ -29,13 +29,19 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <errno.h>
+#if IPERF_LWIP
+#include <lwip/sockets.h>
+#include <lwip/netif.h>
+#include <lwip/netdb.h>
+#else
 #include <sys/socket.h>
-#include <sys/types.h>
-#include <sys/errno.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
-#include <assert.h>
 #include <netdb.h>
+#endif
+#include <sys/types.h>
+#include <sys/errno.h>
+#include <assert.h>
 #include <string.h>
 #include <sys/fcntl.h>
 

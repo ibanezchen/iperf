@@ -32,9 +32,11 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/types.h>
+#if !IPERF_LWIP
 #include <sys/select.h>
 #include <sys/uio.h>
 #include <arpa/inet.h>
+#endif
 
 #include "iperf.h"
 #include "iperf_api.h"
@@ -56,6 +58,9 @@ iperf_create_streams(struct iperf_test *test)
         test->bind_port = orig_bind_port;
 	if (orig_bind_port)
 	    test->bind_port += i;
+#if IPERF_LWIP
+#undef connect
+#endif
         if ((s = test->protocol->connect(test)) < 0)
             return -1;
 
@@ -154,7 +159,7 @@ client_omit_timer_proc(TimerClientData client_data, struct timeval *nowP)
     test->omitting = 0;
     iperf_reset_stats(test);
     if (test->verbose && !test->json_output && test->reporter_interval == 0)
-        iprintf(test, "%s", report_omit_done);
+        ipfprintf(test, "%s", report_omit_done);
 
     /* Reset the timers. */
     if (test->stats_timer != NULL)
@@ -350,9 +355,9 @@ iperf_run_client(struct iperf_test * test)
 	cJSON_AddItemToObject(test->json_start, "version", cJSON_CreateString(version));
 	cJSON_AddItemToObject(test->json_start, "system_info", cJSON_CreateString(get_system_info()));
     } else if (test->verbose) {
-	iprintf(test, "%s\n", version);
-	iprintf(test, "%s", "");
-	iprintf(test, "%s\n", get_system_info());
+	ipfprintf(test, "%s\n", version);
+	ipfprintf(test, "%s", "");
+	ipfprintf(test, "%s\n", get_system_info());
 	iflush(test);
     }
 
@@ -447,8 +452,8 @@ iperf_run_client(struct iperf_test * test)
 	if (iperf_json_finish(test) < 0)
 	    return -1;
     } else {
-	iprintf(test, "\n");
-	iprintf(test, "%s", report_done);
+	ipfprintf(test, "\n");
+	ipfprintf(test, "%s", report_done);
     }
 
     iflush(test);
