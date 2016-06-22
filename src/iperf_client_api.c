@@ -220,7 +220,6 @@ iperf_handle_message_client(struct iperf_test *test)
         case CREATE_STREAMS:
             if (iperf_create_streams(test) < 0)
                 return -1;
-            break;
         case TEST_START:
             if (iperf_init_test(test) < 0)
                 return -1;
@@ -231,8 +230,8 @@ iperf_handle_message_client(struct iperf_test *test)
 	    if (!test->reverse)
 		if (iperf_create_send_timers(test) < 0)
 		    return -1;
-            break;
         case TEST_RUNNING:
+            test->state = TEST_RUNNING;
             break;
         case EXCHANGE_RESULTS:
             if (iperf_exchange_results(test) < 0)
