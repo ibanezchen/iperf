@@ -62,7 +62,11 @@ static int run(struct iperf_test *test);
 
 /**************************************************************************/
 int
+#ifdef IPERF_LWIP
 iperf_main(int argc, char **argv)
+#else
+main(int argc, char **argv)
+#endif
 {
     struct iperf_test *test;
 
