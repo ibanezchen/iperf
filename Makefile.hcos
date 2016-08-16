@@ -20,7 +20,7 @@ CONFIG =-Dint64_t="long long" \
 	-DIPERF_LWIP=1 \
 	-DIPERF_VERSION=3 \
 	-DTCP_MAXSEG=2 \
-	-DCLOCKS_PER_SEC=PLT_HZ \
+	-DCLOCKS_PER_SEC=tmr_hz \
 	-DPACKAGE_STRING="\"hyperc_lwip\"" \
 	-Dselect=lwip_select \
 	-Dsrandom=srand \

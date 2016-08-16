@@ -176,7 +176,7 @@ delay(int us)
 }
 #endif
 
-extern unsigned PLT_HZ;
+extern unsigned tmr_hz;
 void
 cpu_util(double pcpu[3])
 {
